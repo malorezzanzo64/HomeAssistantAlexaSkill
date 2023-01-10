@@ -6,9 +6,11 @@ module.exports = {
     DEBUG : true,  // SET TO TRUE IF YOU WANT TO SEE MORE DETAILS IN THE LOGS
     HA_ENTITY : 'var.alexa_event',
     HA_ENTITY_DEFAULT_DATA : {
-                            "state": "",
+                            "state": "alexa_event", // event to create
                             "attributes": {
                                 "text": "",
+                                "id": "",
+                                "intent": "LaunchRequest",
                                 "slots": {}
                                 }
                             },
