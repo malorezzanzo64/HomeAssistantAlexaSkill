@@ -37,7 +37,7 @@ async function postHaEvent(handlerInput, responseSlot, responseType) {
     let requestEnvelope = handlerInput.requestEnvelope;
     let handlerInputSlots = handlerInput.requestEnvelope.request.intent.slots;
     
-    const url = `https://${constants.HOME_ASSISTANT_URL}/api/events/alexa_event`;
+    const url = `https://${constants.HOME_ASSISTANT_URL}/api/events/${sessionAttributes.haEntity.state}`;
 
     let data = {
             "id": sessionAttributes.haEntity.attributes.id,
