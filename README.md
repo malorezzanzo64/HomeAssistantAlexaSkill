@@ -1,5 +1,6 @@
-# Home Assistant - Alexa Skill
-Thi skill merges the functionality of [Alexa Actions](https://github.com/keatontaylor/alexa-actions) and [Home Assistant intents](https://www.home-assistant.io/integrations/alexa.intent/#support-for-launch-requests).
+# Home Assistant - Alexa Skill ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/malorezzanzo64/HomeAssistantAlexaSkill?label=Release&style=flat-square) ![GitHub](https://img.shields.io/github/license/malorezzanzo64/HomeAssistantAlexaSkill?label=Licence&style=flat-square)
+
+This skill merges the functionality of [Alexa Actions](https://github.com/keatontaylor/alexa-actions) and [Home Assistant intents](https://www.home-assistant.io/integrations/alexa.intent/#support-for-launch-requests).
 
 On top of that, it adds the option to customize the alexa event name and it adds the alexa slots value to the event data.
 
