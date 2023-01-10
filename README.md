@@ -7,4 +7,4 @@ On top of that, it adds the option to customize the alexa event name and it adds
 Like Alexa Actions, it needs [Alexa Media Player](https://github.com/custom-components/alexa_media_player/).
 
 ## Getting Started
-To get started, head over to the [Wiki](https://github.com/malorezzanzo64/HomeAssistantAlexaSkill/wiki).
+To get started, head over to the [Wiki](https://github.com/malorezzanzo64/HomeAssistantAlexaSkill/wiki) I created starting from the [Alexa Actions wiki](https://github.com/keatontaylor/alexa-actions/wiki).
