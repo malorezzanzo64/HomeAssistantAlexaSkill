@@ -31,7 +31,8 @@ exports.handler = Alexa.SkillBuilders.custom()
         interceptors.LoggingRequestInterceptor
     )
     .addResponseInterceptors(
-        interceptors.LoggingResponseInterceptor
+        interceptors.LoggingResponseInterceptor,
+        interceptors.PostHaEventResponseInterceptor
     )
     .addErrorHandlers(
         handlers.ErrorHandler
