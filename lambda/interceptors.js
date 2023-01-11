@@ -60,19 +60,20 @@ const EditHandlerInputRequestInterceptor = {
     }
 }
 
-/*
+
 const PostHaEventResponseInterceptor = {
     process(handlerInput) {
-        if (handlerInput.request.dialogState === "COMPLETED") {
-            logic.postHaEvent();
+        if (!(Alexa.isNewSession(handlerInput.requestEnvelope))
+            && Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            ) {
+            let intentName = (Alexa.getIntentName(handlerInput.requestEnvelope)).replace("AMAZON.","").replace("Intent","").toUpperCase();
+            let responseType = eval("constants." + intentName + "_INTENT_RESPONSE_TYPE");
+            let responseSlot = eval("constants." + intentName + "_INTENT_RESPONSE_SLOT");
+            // let response = Alexa.getSlotValue(handlerInput.requestEnvelope, responseSlot);
+            logic.postHaEvent(handlerInput, responseSlot, responseType);
         }
     }
 }
-
-const PostHaIntentResponseInterceptor = {
-    
-}
-*/
 
 module.exports = {
     LoggingRequestInterceptor,
@@ -80,5 +81,10 @@ module.exports = {
     LocalisationRequestInterceptor,
     CheckOriginRequestInterceptor,
     HaEntityRequestInterceptor,
-    EditHandlerInputRequestInterceptor
+    EditHandlerInputRequestInterceptor,
+    PostHaEventResponseInterceptor
+    //LoadAttributesRequestInterceptor
+    //SaveAttributesResponseInterceptor,
+    //LoadNameRequestInterceptor,
+    //LoadTimezoneRequestInterceptor
 }
