@@ -69,15 +69,18 @@ const IntentHandler = {
             && Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest';
         },
     async handle(handlerInput) {
-        // let speakOutput = handlerInput.t('YES_INTENT_RESPONSE');
         let intentName = (Alexa.getIntentName(handlerInput.requestEnvelope)).replace("AMAZON.","").replace("Intent","").toUpperCase();
-        let responseType = eval("constants." + intentName + "_INTENT_RESPONSE_TYPE");
-        let responseSlot = eval("constants." + intentName + "_INTENT_RESPONSE_SLOT");
-        let response = Alexa.getSlotValue(handlerInput.requestEnvelope, responseSlot);
-        let data = await logic.postHaIntent(handlerInput);
-        console.log("RESPONSE" + JSON.stringify(data.response));
-        logic.postHaEvent(handlerInput, responseSlot, responseType);
-        return data.response;
+        let responseFromHA = eval("constants." + intentName + "_INTENT_RESPONSE_FROM_HA");
+        if (responseFromHA) {
+          let data = await logic.postHaIntent(handlerInput);
+          console.log("RESPONSE" + JSON.stringify(data.response));
+          return data.response;
+        } else {
+          let speakOutput = handlerInput.t(intentName + '_INTENT_RESPONSE');
+          return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .getResponse();
+        }
     }
 }
 
