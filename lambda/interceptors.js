@@ -36,7 +36,8 @@ const LocalisationRequestInterceptor = {
 // This request interceptors saves the Home Assistant entity in session attributes and then resets it to the default value in Home Assistant
 const HaEntityRequestInterceptor = {
     async process(handlerInput) {
-        if (Alexa.isNewSession(handlerInput.requestEnvelope)) {
+        let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+        if (sessionAttributes.haEntity === undefined) {  // Alexa.isNewSession(handlerInput.requestEnvelope) doesn't work because if the dialog is delegated the skill will never receive a new session request
             var haEntity = await logic.getHaEntity();
             logic.SaveHaEntityInSessionAttributes(handlerInput, haEntity);
             // set ha entity to the default state
