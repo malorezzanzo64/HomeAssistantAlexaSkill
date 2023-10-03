@@ -1,5 +1,5 @@
 {
-  "name": "home-assistant.node-js",
+  "name": "home-assistant-alexa-skill",
   "version": "0.0.1",
   "description": "allows to communicate with Home Assistant",
   "main": "index.js",
