@@ -1,0 +1,110 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "Home Assistant NodeJS",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.SelectIntent",
+                    "samples": []
+                },
+                {
+                    "name": "NumberResponse",
+                    "slots": [
+                        {
+                            "name": "Number",
+                            "type": "AMAZON.NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "{Number}"
+                    ]
+                },
+                {
+                    "name": "DurationResponse",
+                    "slots": [
+                        {
+                            "name": "Duration",
+                            "type": "AMAZON.DURATION"
+                        }
+                    ],
+                    "samples": [
+                        "{Duration}"
+                    ]
+                },
+                {
+                    "name": "DateResponse",
+                    "slots": [
+                        {
+                            "name": "Date",
+                            "type": "AMAZON.DATE"
+                        },
+                        {
+                            "name": "Time",
+                            "type": "AMAZON.TIME"
+                        }
+                    ],
+                    "samples": [
+                        "a {Time} del {Date}",
+                        "alle {Time} del {Date}",
+                        "il {Date} a {Time}",
+                        "il {Date} alle {Time}",
+                        "il {Date} {Time}",
+                        "{Date} {Time}",
+                        "{Time} {Date}",
+                        "{Time}",
+                        "{Date}"
+                    ]
+                },
+                {
+                    "name": "YesResponse",
+                    "slots": [],
+                    "samples": [
+                        "de corsa",
+                        "certamente",
+                        "sicuramente",
+                        "sicuro",
+                        "avoglia",
+                        "avoja",
+                        "certo",
+                        "sine",
+                        "sì",
+                        "ya",
+                        "yes",
+                        "va bene",
+                        "ok",
+                        "si"
+                    ]
+                },
+                {
+                    "name": "NoResponse",
+                    "slots": [],
+                    "samples": [
+                        "nop",
+                        "nope",
+                        "niente",
+                        "none",
+                        "nessuno",
+                        "no"
+                    ]
+                }
+            ]
+        }
+    },
+    "version": "1"
+}
