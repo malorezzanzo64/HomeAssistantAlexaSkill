@@ -72,7 +72,7 @@
           ]
         },
         {
-          "name": "YesResponse",
+          "name": "AMAZON.YesIntent",
           "slots": [],
           "samples": [
             "de corsa",
@@ -92,7 +92,7 @@
           ]
         },
         {
-          "name": "NoResponse",
+          "name": "AMAZON.NoIntent",
           "slots": [],
           "samples": [
             "nop",
