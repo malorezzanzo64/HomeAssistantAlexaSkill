@@ -1,0 +1,35 @@
+{
+  "manifest": {
+    "apis": {
+      "custom": {}
+    },
+    "manifestVersion": "1.0",
+    "permissions": [
+      {
+        "name": "alexa::household:lists:read"
+      },
+      {
+        "name": "alexa::household:lists:write"
+      },
+      {
+        "name": "alexa::person_id:read"
+      }
+    ],
+    "publishingInformation": {
+      "distributionCountries": [],
+      "isAvailableWorldwide": true,
+      "locales": {
+        "it-IT": {
+          "description": "permette di far interfacciare Alexa ad Home Assistant",
+          "keywords": [
+            "home assistant"
+          ],
+          "smallIconUri": "https://www.home-assistant.io/images/integrations/alexa/alexa-108x108.png",
+          "largeIconUri": "https://www.home-assistant.io/images/integrations/alexa/alexa-512x512.png",
+          "name": "Home Assistant NodeJS",
+          "summary": "permette di far interfacciare Alexa ad Home Assistant"
+        }
+      }
+    }
+  }
+}
