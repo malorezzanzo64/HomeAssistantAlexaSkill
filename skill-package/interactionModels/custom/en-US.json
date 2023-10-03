@@ -1,0 +1,88 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "Home Assistant NodeJS",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.SelectIntent",
+          "samples": []
+        },
+        {
+          "name": "NumberResponse",
+          "slots": [
+            {
+              "name": "Number",
+              "type": "AMAZON.NUMBER"
+            }
+          ],
+          "samples": [
+            "{Number}"
+          ]
+        },
+        {
+          "name": "DurationResponse",
+          "slots": [
+            {
+              "name": "Duration",
+              "type": "AMAZON.DURATION"
+            }
+          ],
+          "samples": [
+            "{Duration}"
+          ]
+        },
+        {
+          "name": "DateResponse",
+          "slots": [
+            {
+              "name": "Date",
+              "type": "AMAZON.DATE"
+            },
+            {
+              "name": "Time",
+              "type": "AMAZON.TIME"
+            }
+          ],
+          "samples": [
+            "{Dates} at {Times}",
+            "at {Times}",
+            "{Dates}"
+          ]
+        },
+        {
+          "name": "YesResponse",
+          "slots": [],
+          "samples": [
+            "yes",
+            "yeah"
+          ]
+        },
+        {
+          "name": "NoResponse",
+          "slots": [],
+          "samples": [
+            "no",
+            "nope"
+          ]
+        }
+      ]
+    }
+  },
+  "version": "1"
+}
