@@ -24,6 +24,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         handlers.IntentReflectorHandler
     )
     .addRequestInterceptors(
+        interceptors.LoggingRequestInterceptor,
         interceptors.LocalisationRequestInterceptor,
         interceptors.HaEntityRequestInterceptor,
         interceptors.EditHandlerInputRequestInterceptor,
