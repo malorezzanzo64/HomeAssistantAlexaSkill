@@ -15,11 +15,12 @@ const HALaunchRequestHandler = {
         return (sessionAttributes.launchedByHA && Alexa.isNewSession(handlerInput.requestEnvelope) && Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest');
     },
     handle(handlerInput) {
+        console.log("Handler: HALaunchRequestHandler");
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        const speakOutput = sessionAttributes.haEntity.attributes.text;
-        console.log("HA LAUNCH REQUEST TRIGGERED");
+        const speakOutput = sessionAttributes.haEntity.text;
         return handlerInput.responseBuilder
             .speak(speakOutput)
+            // .ask("")
             .reprompt(speakOutput)
             .getResponse();
     }
@@ -33,14 +34,26 @@ const HAIntentHandler = {
             && Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest';
         },
     async handle(handlerInput) {
-        let intentName = (Alexa.getIntentName(handlerInput.requestEnvelope)).replace("AMAZON.","").replace("Intent","").toUpperCase();
-        let responseFromHA = eval("constants." + intentName + "_INTENT_RESPONSE_FROM_HA");
+        console.log("Handler: HAIntentHandler");
+        let intentName = (Alexa.getIntentName(handlerInput.requestEnvelope)).replace("AMAZON.","").replace("Intent","").replace("Response","").toUpperCase();
+        let responseFromHA;
+        if (constants.INTENT.RESPONSE_FROM_HA[intentName] === undefined) {
+            responseFromHA = constants.INTENT.RESPONSE_FROM_HA.DEFAULT;
+        } else {
+            responseFromHA = constants.INTENT.RESPONSE_FROM_HA[intentName];
+        }
         if (responseFromHA) {
           let data = await logic.postHaIntent(handlerInput);
-          console.log("RESPONSE" + JSON.stringify(data.response));
+          console.log("RESPONSE: " + JSON.stringify(data.response));
           return data.response;
         } else {
-          let speakOutput = handlerInput.t(intentName + '_INTENT_RESPONSE');
+            let speakOutput;
+            // intent response is not set in localization.js
+            if(handlerInput.t(intentName) === intentName) {
+                speakOutput = handlerInput.t('OTHER_INTENT_RESPONSE');
+            } else {
+                speakOutput = handlerInput.t(intentName + '_INTENT_RESPONSE');
+            }
           return handlerInput.responseBuilder
             .speak(speakOutput)
             .getResponse();
@@ -53,12 +66,18 @@ const LaunchRequestHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
+        console.log("Handler: LaunchRequestHandler");
+        
         const speakOutput = handlerInput.t('WELCOME_MSG');
                             
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .reprompt(speakOutput)
             .getResponse();
+
+        
+        
+        
     }
 };
 
@@ -69,14 +88,27 @@ const IntentHandler = {
             && Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest';
         },
     async handle(handlerInput) {
-        let intentName = (Alexa.getIntentName(handlerInput.requestEnvelope)).replace("AMAZON.","").replace("Intent","").toUpperCase();
-        let responseFromHA = eval("constants." + intentName + "_INTENT_RESPONSE_FROM_HA");
+        console.log("Handler: IntentHandler");
+        let intentName = (Alexa.getIntentName(handlerInput.requestEnvelope)).replace("AMAZON.","").replace("Intent","").replace("Response","").toUpperCase();
+        // set responseFromHA to constants.INTENT.RESPONSE_FROM_HA[intentName] if it is defined, otherwise set it to constants.INTENT.RESPONSE_FROM_HA.DEFAULT
+        let responseFromHA;
+        if (constants.INTENT.RESPONSE_FROM_HA[intentName] === undefined) {
+            responseFromHA = constants.INTENT.RESPONSE_FROM_HA.DEFAULT;
+        } else {
+            responseFromHA = constants.INTENT.RESPONSE_FROM_HA[intentName];
+        }
         if (responseFromHA) {
           let data = await logic.postHaIntent(handlerInput);
           console.log("RESPONSE" + JSON.stringify(data.response));
           return data.response;
         } else {
-          let speakOutput = handlerInput.t(intentName + '_INTENT_RESPONSE');
+            let speakOutput;
+            // intent response is not set in localization.js
+            if(handlerInput.t(intentName) === intentName) {
+                speakOutput = handlerInput.t('OTHER_INTENT_RESPONSE');
+            } else {
+                speakOutput = handlerInput.t(intentName + '_INTENT_RESPONSE');
+            }
           return handlerInput.responseBuilder
             .speak(speakOutput)
             .getResponse();
@@ -90,6 +122,7 @@ const HelpIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
+        console.log("Handler: HelpIntentHandler");
         const speakOutput = handlerInput.t('HELP_MSG');
 
         return handlerInput.responseBuilder
@@ -106,6 +139,7 @@ const CancelAndStopIntentHandler = {
                 || Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.StopIntent');
     },
     handle(handlerInput) {
+        console.log("Handler: CancelAndStopIntentHandler");
         const speakOutput = handlerInput.t('GOODBYE_MSG');
 
         return handlerInput.responseBuilder
@@ -124,6 +158,7 @@ const FallbackIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.FallbackIntent';
     },
     handle(handlerInput) {
+        console.log("Handler: FallbackIntentHandler");
         const speakOutput = handlerInput.t('FALLBACK_MSG');
 
         return handlerInput.responseBuilder
@@ -157,8 +192,9 @@ const IntentReflectorHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest';
     },
     handle(handlerInput) {
+        console.log("Handler: IntentReflectorHandler");
         const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
-        const speakOutput = `You just triggered ${intentName}`;
+        const speakOutput = handlerInput.t('REFLECTOR_MSG', {intent: intentName});
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
