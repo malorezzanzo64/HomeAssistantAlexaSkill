@@ -26,9 +26,20 @@
           ],
           "smallIconUri": "https://www.home-assistant.io/images/integrations/alexa/alexa-108x108.png",
           "largeIconUri": "https://www.home-assistant.io/images/integrations/alexa/alexa-512x512.png",
-          "name": "Home Assistant NodeJS",
+          "name": "Home Assistant Alexa Skill",
           "summary": "permette di far interfacciare Alexa ad Home Assistant"
+        },
+        "en/US": {
+          "description": "allows two/way communicatin between Echo devices and Home Assistant",
+          "keywords": [
+            "home assistant"
+          ],
+          "smallIconUri": "https://www.home-assistant.io/images/integrations/alexa/alexa-108x108.png",
+          "largeIconUri": "https://www.home-assistant.io/images/integrations/alexa/alexa-512x512.png",
+          "name": "Home Assistant Alexa Skil",
+          "summary": "allows two/way communicatin between Echo devices and Home Assistant"
         }
+
       }
     }
   }
