@@ -2,6 +2,8 @@ const Alexa = require('ask-sdk-core');
 const constants = require('./constants'); // constants such as specific service permissions go here
 const axios = require('axios');
 
+
+// send the intent to Home Assistant using the Alexa API
 async function postHaIntent(handlerInput) {
     const url = `https://${constants.HOME_ASSISTANT_URL}/api/alexa`;
     let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
@@ -32,18 +34,16 @@ async function postHaIntent(handlerInput) {
     }
 }
 
-async function postHaEvent(handlerInput, responseSlot, responseType) {
+
+// send the intent to Home Assistant as an event
+async function postHaEvent(handlerInput, responseSlot = constants.INTENT.RESPONSE_SLOT.DEFAULT, responseType = constants.INTENT.RESPONSE_TYPE.DEFAULT) {
     let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
     let requestEnvelope = handlerInput.requestEnvelope;
-    let handlerInputSlots = handlerInput.requestEnvelope.request.intent.slots;
     
-    const url = `https://${constants.HOME_ASSISTANT_URL}/api/events/${sessionAttributes.haEntity.state}`;
+    const url = `https://${constants.HOME_ASSISTANT_URL}/api/events/${sessionAttributes.haEntity.event}`;
 
     let data = {
-            "id": sessionAttributes.haEntity.attributes.id,
-            "intent": Alexa.getIntentName(handlerInput.requestEnvelope),
-            "slot": {},
-            "slot_id": {}
+            "id": sessionAttributes.haEntity.id,
         }
     // If request comes from Home Assistant, add response and response_type
     if (sessionAttributes.launchedByHA) {
@@ -56,19 +56,31 @@ async function postHaEvent(handlerInput, responseSlot, responseType) {
             data.response_type = responseType;
         }
     }
+    // Add person_id
     if (requestEnvelope.context.System.person) {
         let personId = requestEnvelope.context.System.person.personId;
         data['person_id'] = personId;
     }
     
-    // Add slots and slots id
-    for (var slot in handlerInputSlots) {
-        // data[slot] = handlerInputSlots[slot].value;
-        data.slot[slot] = getSlotValue(requestEnvelope, slot); //handlerInputSlots[slot].value
-        data.slot_id[slot] = getSlotId(requestEnvelope, slot);
+    // If it is an intent request (and not a session ended request)
+    if (Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest') {
+        
+        // Add slots and slot ids
+        let handlerInputSlots = handlerInput.requestEnvelope.request.intent.slots;
+        data.slot = {};
+        data.slot_id = {};
+        // Add slots and slots id
+        for (var slot in handlerInputSlots) {
+            // data[slot] = handlerInputSlots[slot].value;
+            data.slot[slot] = getSlotValue(handlerInput.requestEnvelope, slot); //handlerInputSlots[slot].value
+            data.slot_id[slot] = getSlotId(handlerInput.requestEnvelope, slot);
+        }
+        // data.slots = JSON.stringify(data.slots);
+        
+        // Add intent
+        data.intent = Alexa.getIntentName(handlerInput.requestEnvelope);
     }
-    // data.slots = JSON.stringify(data.slots);
-    
+
     const config = {
         timeout : 4000,
         headers : {
@@ -157,10 +169,10 @@ async function getResponse(url, config) {
 }
 */
 
-async function getHaEntity(){
+async function getHaEntity(entity){
     
     const endpoint = `https://${constants.HOME_ASSISTANT_URL}/api`;
-    const url = `${endpoint}/states/${constants.HA_ENTITY}`
+    const url = `${endpoint}/states/${entity}`
     
     const config = {
         timeout : 4000,
@@ -175,20 +187,24 @@ async function getHaEntity(){
     } catch (error) {
     console.error("HA ENTITY ERROR\n" + error);
     }
-    return haEntity.data;
+    if (entity === constants.HA_ENTITY.SLOTS) {
+        haEntity.data.state = JSON.parse(haEntity.data.state);
+    }
+    return haEntity.data.state;
 }
 
-async function setHaEntity(
-    url = `https://${constants.HOME_ASSISTANT_URL}/api/states/${constants.HA_ENTITY}`,
-    data = constants.HA_ENTITY_DEFAULT_DATA,
-    config = {
+async function setHaEntity(entity, entity_default) {
+    const url = `https://${constants.HOME_ASSISTANT_URL}/api/states/${entity}`;
+    const data = {
+            "state": entity_default
+            };
+    const config = {
         timeout : 4000,
         headers : {
                     'Authorization': `Bearer ${constants.TOKEN}`,
                     'Content-Type': 'application/json'
                   }
-            }
-    ){
+            };
     //  Updates the Home Assistant server state with alexa_event id.
     try {
         await axios.post(url, data, config);
@@ -221,16 +237,20 @@ function getSlotId(requestEnvelope, slotName) {
 function getSlotValue(requestEnvelope, slotName) {
     let slot = Alexa.getSlot(requestEnvelope, slotName);
     console.log("SLOT: "+ JSON.stringify(slot));
-    if (slot && slot.resolutions && slot.resolutions.resolutionsPerAuthority) {
-        let resolutionsPerAuthority = slot.resolutions.resolutionsPerAuthority;
-        for (let i = 0; i < resolutionsPerAuthority.length; i++) {
-            if (resolutionsPerAuthority[i].status.code === "ER_SUCCESS_MATCH") {
-                let value = resolutionsPerAuthority[i].values[0];
-                if (value.value && value.value.name) {
-                    return value.value.name;
+    if (slot.resolutions) {
+        if (slot.resolutions.resolutionsPerAuthority) {
+            let resolutionsPerAuthority = slot.resolutions.resolutionsPerAuthority;
+            for (let i = 0; i < resolutionsPerAuthority.length; i++) {
+                if (resolutionsPerAuthority[i].status.code === "ER_SUCCESS_MATCH") {
+                    let value = resolutionsPerAuthority[i].values[0];
+                    if (value.value && value.value.name) {
+                        return value.value.name;
+                    }
                 }
             }
         }
+    } else {
+        return Alexa.getSlotValue(requestEnvelope, slotName);
     }
 }
 
@@ -239,8 +259,8 @@ function isLaunchedByHa(handlerInput) {
     let sessionAttributes = attributesManager.getSessionAttributes();
     if (Alexa.isNewSession(handlerInput.requestEnvelope)) {
         try {
-                if ((requestEnvelope.request.metadata.referrer === 'amzn1.alexa-speechlet-client.SequencedSimpleIntentHandler') &&
-                    ((JSON.stringify(sessionAttributes.haEntity.state) !== JSON.stringify(constants.HA_ENTITY_DEFAULT_DATA.state)) || (JSON.stringify(sessionAttributes.haEntity.attributes) !== JSON.stringify(constants.HA_ENTITY_DEFAULT_DATA.attributes)))
+                if ((requestEnvelope.request.metadata.referrer === 'amzn1.alexa-speechlet-client.SequencedSimpleIntentHandler')
+                    && (JSON.stringify(sessionAttributes.haEntity.text) !== JSON.stringify(constants.HA_ENTITY.TEXT_DEFAULT))
                 ){
                     sessionAttributes.launchedByHA = true;
                     attributesManager.setSessionAttributes(sessionAttributes);
@@ -255,17 +275,6 @@ function isLaunchedByHa(handlerInput) {
     } else {
         return sessionAttributes.launchedByHA;
     }
-}
-
-function updatedIntentLaunch(handlerInput){
-    const updatedIntent = {
-                    		name: 'InsultIntent',
-                    		confirmationStatus: 'NONE',
-                    		slots : {}
-                        };
-    const response = handlerInput.responseBuilder.addDelegateDirective(updatedIntent).getResponse();
-    console.log("RESPONSE\n" + JSON.stringify(response));
-    return response;
 }
 
 function SaveHaEntityInSessionAttributes(handlerInput, haEntity) {
@@ -309,13 +318,13 @@ function EditHandlerInput(handlerInput){
         handlerInputSlots = {};
     }
     
-    let haEntitySlots = JSON.parse(JSON.stringify(sessionAttributes.haEntity.attributes.slots));
+    let haEntitySlots = JSON.parse(JSON.stringify(sessionAttributes.haEntity.slots));
     
     // format haEntitySlots to be compatible with handlerInputSlots
-    for (var slot in sessionAttributes.haEntity.attributes.slots) {
+    for (var slot in sessionAttributes.haEntity.slots) {
         haEntitySlots[slot] = {};
         haEntitySlots[slot].name = slot;
-        haEntitySlots[slot].value = sessionAttributes.haEntity.attributes.slots[slot];
+        haEntitySlots[slot].value = sessionAttributes.haEntity.slots[slot];
         haEntitySlots[slot].confirmationStatus = "NONE";
         haEntitySlots[slot].resolutions = {
 						"resolutionsPerAuthority": [
@@ -335,8 +344,8 @@ function EditHandlerInput(handlerInput){
 							}
 						]
 					};
-		haEntitySlots[slot].resolutions.resolutionsPerAuthority[0].values[0].value.name = sessionAttributes.haEntity.attributes.slots[slot];
-		haEntitySlots[slot].resolutions.resolutionsPerAuthority[0].values[0].value.id = sessionAttributes.haEntity.attributes.slots[slot];
+		haEntitySlots[slot].resolutions.resolutionsPerAuthority[0].values[0].value.name = sessionAttributes.haEntity.slots[slot];
+		haEntitySlots[slot].resolutions.resolutionsPerAuthority[0].values[0].value.id = sessionAttributes.haEntity.slots[slot];
     }
     try {
         // Add slots in Home Assistant entity
@@ -363,7 +372,7 @@ function SaveHaIntentInSessionAttributes(handlerInput){
     // add intent slots
 */
     try {
-        sessionAttributes.haIntent.request.intent.slots = sessionAttributes.haEntity.attributes.slots;
+        sessionAttributes.haIntent.request.intent.slots = sessionAttributes.haEntity.slots;
     } catch (error) {
         console.error("Home Assistant entity slots attribute error: " + error);
     }
@@ -402,7 +411,6 @@ module.exports = {
     getHaEntity,
     setHaEntity,
     isLaunchedByHa,
-    updatedIntentLaunch,
     SaveHaEntityInSessionAttributes,
     SaveHaIntentInSessionAttributes,
     EditHandlerInput
