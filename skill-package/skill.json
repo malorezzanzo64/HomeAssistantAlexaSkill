@@ -29,7 +29,7 @@
           "name": "Home Assistant Alexa Skill",
           "summary": "permette di far interfacciare Alexa ad Home Assistant"
         },
-        "en/US": {
+        "en-US": {
           "description": "allows two/way communicatin between Echo devices and Home Assistant",
           "keywords": [
             "home assistant"
