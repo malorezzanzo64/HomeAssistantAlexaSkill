@@ -16,7 +16,7 @@ module.exports = {
     },
     it : {
         translation: {
-            WELCOME_MSG: 'Benvenuto',
+            WELCOME_MSG: 'Benvenuto in casa Mazza',
             HELLO_MSG: 'Ciao',
             HELP_MSG: 'Hai bisogno di aiuto?',
             GOODBYE_MSG: 'Ciao',
@@ -24,9 +24,10 @@ module.exports = {
             FALLBACK_MSG: 'Credo di non aver capito',
             ERROR_MSG: 'C\'è stato un errore',
             OK_MSG: 'Ok',
+            OTHER_INTENT_RESPONSE: 'Ok',
             YES_INTENT_RESPONSE: 'Ok',
             NO_INTENT_RESPONSE: 'Ok',
-            SELECT_INTENT_RESPONSE: 'You selected {{select}}',
+            SELECT_INTENT_RESPONSE: 'Hai selezionato {{select}}'
         }
     },
     es: {
