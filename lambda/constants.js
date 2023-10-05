@@ -1,8 +1,8 @@
 module.exports = {
     /* UPDATE THESE VARIABLES WITH YOUR CONFIG */
-    HOME_ASSISTANT_URL : '',  // REPLACE WITH THE URL FOR YOUR HOME ASSISTANT
+    HOME_ASSISTANT_URL : 'ha.malorezzanzo.com',  // REPLACE WITH THE URL FOR YOUR HOME ASSISTANT
     VERIFY_SSL : true,  // SET TO FALSE IF YOU DO NOT HAVE VALID CERTS
-    TOKEN : '',  // ADD YOUR LONG LIVED TOKEN IF NEEDED OTHERWISE LEAVE BLANK
+    TOKEN : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI3NTYzZjlhNzFmNmE0OTBhOTZkOWNhMWQ3YzY5NzFmYyIsImlhdCI6MTY3MjE4ODQ2MywiZXhwIjoxOTg3NTQ4NDYzfQ.-keI9UwvrZSIpLK2bi5-bC0flF1oQ1rO2dX_nKrt10I',  // ADD YOUR LONG LIVED TOKEN IF NEEDED OTHERWISE LEAVE BLANK
     DEBUG : true,  // SET TO TRUE IF YOU WANT TO SEE MORE DETAILS IN THE LOGS
     
     
@@ -30,6 +30,7 @@ module.exports = {
             SELECTION : "ResponseSelection",
             NUMBER : "ResponseNumeric",
             DURATION : "ResponseDuration",
+            ROOM : "ResponseRoom",
         },
         
         RESPONSE_SLOT : {
@@ -48,11 +49,12 @@ module.exports = {
             DEFAULT : false,
             NONE : true,
             YES : true,
-            NO : true,
+            NO : false,
             SELECT : true,
             SELECTION : true,
             NUMBER : true,
             DURATION : true,
+            ROOM : true,
         },
     }
 }

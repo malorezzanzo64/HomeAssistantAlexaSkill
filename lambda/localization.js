@@ -12,6 +12,10 @@ module.exports = {
             YES_INTENT_RESPONSE: 'Ok',
             NO_INTENT_RESPONSE: 'Ok',
             SELECT_INTENT_RESPONSE: 'You selected {{select}}',
+            NONE_INTENT_RESPONSE : "You selected nothing",
+            NUMBER_INTENT_RESPONSE : "You selected  a number",
+            DURATION_INTENT_RESPONSE : "You selected  a duration",
+            SELECTROOM_INTENT_RESPONSE : "You selected  a room",
         }
     },
     it : {
@@ -27,7 +31,11 @@ module.exports = {
             OTHER_INTENT_RESPONSE: 'Ok',
             YES_INTENT_RESPONSE: 'Ok',
             NO_INTENT_RESPONSE: 'Ok',
-            SELECT_INTENT_RESPONSE: 'Hai selezionato {{select}}'
+            SELECT_INTENT_RESPONSE: 'Hai selezionato {{select}}',
+            NONE_INTENT_RESPONSE : "Non hai detto niente",
+            NUMBER_INTENT_RESPONSE : "Hai selezionato un numero",
+            DURATION_INTENT_RESPONSE : "Hai selezionato una durata",
+            SELECTROOM_INTENT_RESPONSE : "Hai selezionato una stanza",
         }
     },
     es: {
